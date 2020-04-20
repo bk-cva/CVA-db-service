@@ -1,14 +1,14 @@
 import { Controller, Get, Param, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
-import { CalendarService } from './calendar/calendar.service';
-import { ListEventsDto } from './calendar/dtos/list-events.dto';
-import { GetEventDto } from './calendar/dtos/get-event.dto';
+import { CalendarService } from './calendar.service';
+import { ListEventsDto } from './dtos/list-events.dto';
+import { GetEventDto } from './dtos/get-event.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @Controller('calendar')
-export class AppController {
+export class CalendarController {
     constructor(
         private readonly calendarService: CalendarService,
-    ) {}
+    ) { }
 
     @Get('list')
     async getListEvents(): Promise<ListEventsDto> {
