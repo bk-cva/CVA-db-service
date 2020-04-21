@@ -1,8 +1,14 @@
-import { Controller, Get, Param, UseInterceptors, ClassSerializerInterceptor } from '@nestjs/common';
-import { ApiTags, ApiResponse, ApiOperation, ApiParam } from '@nestjs/swagger';
+import {
+    Controller, Get, Post, Query, Body,
+    UseInterceptors, ClassSerializerInterceptor,
+} from '@nestjs/common';
+import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import { CalendarService } from './calendar.service';
-import { ListEventsDto } from './dtos/list-events.dto';
-import { GetEventDto } from './dtos/get-event.dto';
+import { ListEventsResDto } from './dtos/list-events-res.dto';
+import { ListEventsReqDto } from './dtos/list-events-req.dto';
+import { GetEventResDto } from './dtos/get-event-res.dto';
+import { GetEventReqDto } from './dtos/get-event-req.dto';
+import { CreateEventReqDto } from './dtos/create-event-req.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('Calendar')
@@ -13,27 +19,45 @@ export class CalendarController {
     ) { }
 
     @ApiOperation({
-        summary: 'Get a list of events',
+        summary: 'Get a list of calendars',
     })
     @ApiResponse({
         status: 200,
-        type: ListEventsDto,
     })
-    @Get('list')
-    async getListEvents(): Promise<ListEventsDto> {
-        return new ListEventsDto(await this.calendarService.listEvents());
+    @Get()
+    async getListCalendars(): Promise<any> {
+        return await this.calendarService.listCalendars();
+    }
+
+    @ApiOperation({
+        summary: 'Get a list of events on a calendar',
+    })
+    @ApiResponse({
+        status: 200,
+        type: ListEventsResDto,
+    })
+    @Get('event/list')
+    async getListEvents(@Query() query: ListEventsReqDto): Promise<ListEventsResDto> {
+        return new ListEventsResDto(await this.calendarService.listEvents(query.calendarId));
     }
 
     @ApiOperation({
         summary: 'Get an event by ID',
-        description: 'The ID can be received by getting the list of events',
     })
     @ApiResponse({
         status: 200,
-        type: GetEventDto,
+        type: GetEventResDto,
     })
-    @Get(':id')
-    async getEvent(@Param('id') id: string): Promise<GetEventDto> {
-        return new GetEventDto(await this.calendarService.getOneEvent(id));
+    @Get('event')
+    async getEvent(@Query() query: GetEventReqDto): Promise<GetEventResDto> {
+        return new GetEventResDto(await this.calendarService.getEvent(query.calendarId, query.eventId));
+    }
+
+    @ApiOperation({
+        summary: 'Create an event',
+    })
+    @Post('event')
+    async createEvent(@Body() query: CreateEventReqDto): Promise<any> {
+        return await this.calendarService.createEvent(query);
     }
 }

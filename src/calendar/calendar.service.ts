@@ -26,42 +26,96 @@ export class CalendarService {
     }
 
     /**
-     * Lists the next 10 events on the user's primary calendar.
+     * Lists all calendar.
      */
-    listEvents(): any {
-        return new Promise((resolve, rej) => {
+    listCalendars(): any {
+        return new Promise((resolve, reject) => {
+            this.calendar.calendarList.list({}, (err, res) => {
+                if (err) {
+                    return reject('The API returned an error: ' + err);
+                }
+                const { items } = res.data;
+                resolve({
+                    items,
+                });
+            });
+        });
+    }
+
+    /**
+     * Lists the next 10 events on a calendar.
+     * @param calendarId - ID of the calendar.
+     */
+    listEvents(calendarId: string): any {
+        return new Promise((resolve, reject) => {
             this.calendar.events.list({
-                calendarId: 'primary',
+                calendarId,
                 timeMin: (new Date()).toISOString(),
                 maxResults: 10,
                 singleEvents: true,
                 orderBy: 'startTime',
             }, (err, res) => {
                 if (err) {
-                    return rej('The API returned an error: ' + err);
+                    return reject('The API returned an error: ' + err);
                 }
-                const events = res.data.items;
+                const { items } = res.data;
                 resolve({
-                    events,
+                    items,
                 });
             });
         });
     }
+
     /**
-     * Lists the next 10 events on the user's primary calendar.
+     * Get an event on a calendar.
+     * @param calendarId - ID of the calendar.
+     * @param eventId - ID of the event.
      */
-    getOneEvent(eventId: string): any {
-        return new Promise((resolve, rej) => {
+    getEvent(calendarId: string, eventId: string): any {
+        return new Promise((resolve, reject) => {
             this.calendar.events.get({
                 eventId,
-                calendarId: 'primary',
+                calendarId,
             }, (err, res) => {
                 if (err) {
-                    return rej('The API returned an error: ' + err);
+                    return reject('The API returned an error: ' + err);
                 }
                 const events = res.data;
                 resolve(events);
             });
         });
+    }
+
+    /**
+     * Create an event on the user's primary calendar.
+     * @param calendarId - ID of the calendar.
+     * @param summary - title of the event.
+     * @param location - location in string format.
+     * @param start - starting date time.
+     * @param end - ending date time.
+     */
+    createEvent({ calendarId, summary, location, start, end }: {
+        calendarId: string, summary: string, location: string, start: string, end: string,
+    }): any {
+        return new Promise((resolve, reject) => {
+            this.calendar.events.insert({
+                calendarId,
+                requestBody: {
+                    summary,
+                    location,
+                    start: {
+                        dateTime: start,
+                    },
+                    end: {
+                        dateTime: end,
+                    },
+                },
+            }, (err, res) => {
+                if (err) {
+                    return reject('The API returned an error: ' + err);
+                }
+                resolve();
+            });
+        })
     }
 }
