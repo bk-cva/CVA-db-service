@@ -116,6 +116,25 @@ export class CalendarService {
                 }
                 resolve();
             });
-        })
+        });
+    }
+
+    /**
+     * Create an event on the user's primary calendar.
+     * @param calendarId - ID of the calendar.
+     * @param eventId - ID of the event.
+     */
+    deleteEvent(calendarId: string, eventId: string): any {
+        return new Promise((resolve, reject) => {
+            this.calendar.events.delete({
+                calendarId,
+                eventId,
+            }, (err, res) => {
+                if (err) {
+                    return reject('The API returned an error: ' + err);
+                }
+                resolve();
+            });
+        });
     }
 }

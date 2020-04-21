@@ -10,7 +10,9 @@ export class CreateEventReqDto {
     @IsString()
     readonly summary: string;
 
-    @ApiPropertyOptional()
+    @ApiPropertyOptional({
+        description: 'Geographic location of the event as free-form text',
+    })
     @IsOptional()
     @IsString()
     readonly location: string;
