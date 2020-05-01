@@ -16,7 +16,9 @@ export class PersonalAddressService {
         return new Promise((resolve, reject) => {
             query.then((pa) => {
                 if (pa.length > 0) {
-                    resolve(pa);
+                    resolve({
+                        items: pa,
+                    });
                     return;
                 }
                 reject('User not found.');
