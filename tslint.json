@@ -14,7 +14,12 @@
     "arrow-parens": false,
     "object-literal-sort-keys": false,
     "one-line": false,
-    "indent": [true, "spaces", 4]
+    "indent": [true, "spaces", 4],
+    "variable-name": {
+      "options": [
+        "allow-snake-case"
+      ]
+    }
   },
   "rulesDirectory": []
 }
