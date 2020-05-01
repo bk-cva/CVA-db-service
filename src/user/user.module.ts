@@ -4,6 +4,7 @@ import { UserController } from './user.controller';
 import { UserService } from './user.service';
 import { ConfigService } from '../config/config.service';
 import { ConfigModule } from '../config/config.module';
+import { DatabaseModule } from '../database/database.module';
 
 const pgConfig = (configService: ConfigService) => ({
     host: configService.get('PG_HOST'),
@@ -18,24 +19,10 @@ const pgConfig = (configService: ConfigService) => ({
 });
 
 @Module({
-    imports: [ConfigModule],
+    imports: [ConfigModule, DatabaseModule],
     controllers: [UserController],
     providers: [
         UserService,
-        {
-            provide: 'KNEX',
-            inject: [ConfigService],
-            useFactory: async (configService: ConfigService) => {
-                return knex({
-                    client: 'pg',
-                    connection: pgConfig(configService),
-                    pool: {
-                        min: 1,
-                        max: 1,
-                    },
-                });
-            },
-        },
     ],
 })
 export class UserModule {}
