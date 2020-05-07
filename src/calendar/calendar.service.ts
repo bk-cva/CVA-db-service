@@ -87,6 +87,30 @@ export class CalendarService {
     }
 
     /**
+     * Query events on a calendar with parameters such as time min & max, name, etc..
+     * @param calendarId - ID of the calendar.
+     * @param q - free text search terms to find events that match these terms in any field.
+     * @param timeMin - minimum time of the events.
+     * @param timeMax - maximum time of the events.
+     */
+    queryEvents(calendarId: string, q: string = null, timeMin: string = null, timeMax: string = null): any {
+        return new Promise((resolve, reject) => {
+            this.calendar.events.list({
+                calendarId,
+                q: q === null ? undefined : q,
+                timeMin: timeMin === null ? undefined : timeMin,
+                timeMax: timeMax === null ? undefined : timeMax,
+            }, (err, res) => {
+                if (err) {
+                    return reject('The API returned an error: ' + err);
+                }
+                const events = res.data;
+                resolve(events);
+            });
+        });
+    }
+
+    /**
      * Create an event on the user's primary calendar.
      * @param calendarId - ID of the calendar.
      * @param summary - title of the event.

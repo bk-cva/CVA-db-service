@@ -11,6 +11,7 @@ import { GetEventResDto } from './dtos/get-event-res.dto';
 import { GetEventReqDto } from './dtos/get-event-req.dto';
 import { CreateEventReqDto } from './dtos/create-event-req.dto';
 import { DeleteEventReqDto } from './dtos/delete-event-req.dto';
+import { QueryEventsReqDto } from './dtos/query-events-req.dto';
 
 @UseInterceptors(ClassSerializerInterceptor)
 @ApiTags('Calendar')
@@ -54,6 +55,23 @@ export class CalendarController {
     @Get('event')
     async getEvent(@Query() query: GetEventReqDto): Promise<GetEventResDto> {
         return new GetEventResDto(await this.calendarService.getEvent(query.calendarId, query.eventId));
+    }
+
+    @ApiOperation({
+        summary: 'Query events with parameters',
+    })
+    @ApiResponse({
+        status: 200,
+        type: ListEventsResDto,
+    })
+    @Get('event/query')
+    async queryEvents(@Query() query: QueryEventsReqDto): Promise<ListEventsResDto> {
+        return new ListEventsResDto(await this.calendarService.queryEvents(
+            query.calendarId,
+            query.q,
+            query.timeMin,
+            query.timeMax,
+        ));
     }
 
     @ApiOperation({
