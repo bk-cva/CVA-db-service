@@ -118,8 +118,8 @@ export class CalendarService {
      * @param start - starting date time.
      * @param end - ending date time.
      */
-    createEvent({ calendarId, summary, location, start, end }: {
-        calendarId: string, summary: string, location: string, start: string, end: string,
+    createEvent({ calendarId, summary, location, start, end, useDefaultReminders }: {
+        calendarId: string, summary: string, location: string, start: string, end: string, useDefaultReminders: boolean,
     }): any {
         return new Promise((resolve, reject) => {
             this.calendar.events.insert({
@@ -133,12 +133,15 @@ export class CalendarService {
                     end: {
                         dateTime: end,
                     },
+                    reminders: {
+                        useDefault: useDefaultReminders,
+                    },
                 },
             }, (err, res) => {
                 if (err) {
                     return reject('The API returned an error: ' + err);
                 }
-                resolve();
+                resolve(res.data);
             });
         });
     }

@@ -71,4 +71,8 @@ export class EventEntity extends Entity {
         dateTime: string,
         timeZone: boolean,
     };
+
+    @ApiProperty()
+    @Expose()
+    readonly reminders: any;
 }

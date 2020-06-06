@@ -1,5 +1,5 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsString, IsOptional, ValidateNested, IsDateString } from 'class-validator';
+import { IsString, IsOptional, IsDateString, IsBoolean } from 'class-validator';
 
 export class CreateEventReqDto {
     @ApiProperty()
@@ -28,4 +28,11 @@ export class CreateEventReqDto {
     })
     @IsDateString()
     readonly end: string;
+
+    @ApiPropertyOptional({
+        default: true,
+    })
+    @IsOptional()
+    @IsBoolean()
+    readonly useDefaultReminders: boolean = true;
 }
